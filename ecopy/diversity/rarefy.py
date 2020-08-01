@@ -1,6 +1,9 @@
 import numpy as np
 from pandas import DataFrame
-from scipy.misc import comb
+try:
+	from scipy.misc import comb
+except ImportError:
+	import scipy.special.comb
 import matplotlib.pyplot as plt
 
 def rarefy(x, method='rarefy', size = None, breakNA=True):
