@@ -10,6 +10,12 @@ Install via 'pip install ecopy'
 
 What's New
 =======
+0.2.0
+--------
+- Ported to Python 3.11-3.14
+- Removed dependency of C++ compiler
+- **EcoPy 0.2.0 is a compatibility-focused revival release. Further numerical and methodological auditing is ongoing.**
+
 0.1.2.3
 --------
 - Fixed compatibility problems in functions cca(), simper(), and transform()
