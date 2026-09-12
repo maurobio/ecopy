@@ -124,7 +124,7 @@ class nls(object):
 	def summary(self):
 		print('')
 		print('Non-linear least squares')
-		print('Model: ' + self.func.func_name)
+		print('Model: ' + self.func.__name__)
 		print('Parameters:')
 		print('{0:^5} {1:^8} {2:^5} {3:^8} {4:^8}'.format(' ','Estimate', 'Std. Error', 't-value', 'P(>|t|)'))
 		for i in range( len(self.parmNames) ):

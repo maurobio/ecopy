@@ -104,19 +104,19 @@ class Mantel(object):
 				residMat_perm = permuteFunc(resMat)
 				r_star = partialMantel(residMat_perm, d2, d_condition)
 				r_perm[i] = r_star[0,1]
-		if test is 'pearson':
+		if test == 'pearson':
 			self.r_obs = manFunc_pears(d1, d2)
 			for i in range(nperm):
 				d1_perm = permuteFunc(d1)
 				r_perm[i] = manFunc_pears(d1_perm, d2)
-		if test is 'spearman':
+		if test == 'spearman':
 			self.r_obs = manFunc_spear(d1, d2)
 			for i in range(nperm):
 				d1_perm = permuteFunc(d1)
 				r_perm[i] = manFunc_spear(d1_perm, d2)
-		if tail is 'greater':
+		if tail == 'greater':
 			self.pval = np.mean(r_perm > self.r_obs)
-		elif tail is 'lower':
+		elif tail == 'lower':
 			self.pval = np.mean(r_perm < self.r_obs)
 		else:
 			self.pval = np.mean(np.abs(r_perm) > self.r_obs)

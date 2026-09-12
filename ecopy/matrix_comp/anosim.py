@@ -91,7 +91,7 @@ class anosim(object):
 		if factor2 is not None and nested:
 			g1 = np.array(factor1)
 			g2 = np.array(factor2)
-			comb = np.array(zip(g1, g2), dtype=[('group1', 'S10'), ('group2', 'S10')])
+			comb = np.array(list(zip(g1, g2)), dtype=[('group1', 'S10'), ('group2', 'S10')])
 			sortIX = comb.argsort(order='group2')
 			comb = comb[sortIX]
 			dist1 = dist[sortIX,:][:,sortIX]

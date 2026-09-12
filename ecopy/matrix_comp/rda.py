@@ -270,7 +270,7 @@ def dummyMat(matrix, scale):
 			w = (w - np.mean(w))
 			if scale:
 				w = w / np.std(w, ddof=1)
-			modMat = np.hstack((modMat, w.reshape(rows, 1)))
+			modMat = np.hstack((modMat, np.asarray(w).reshape(rows, 1)))
 			modNames.append(matrix.columns[col])
 			pType.append('q')
 		elif columnType[col]=='f':

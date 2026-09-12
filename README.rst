@@ -27,8 +27,20 @@ License
 **EcoPy** is distributed under the MIT license
 
 Version
-=====
-0.1.2.2
+=======
+0.2.0
+
+Release 0.2.0
+--------------
+- Modernized for current Python 3 and NumPy, SciPy, pandas, and matplotlib.
+- Tested with Python 3.14.
+- The isotonic-regression implementation now has a pure-Python/NumPy fallback, so
+  installation does not require a C/C++ compiler.
+- The original Cython implementation is retained as optional development code.
+- Updated legacy Python 2/early Python 3 APIs and numerical compatibility issues.
+- This release is intended as a compatibility-focused revival of EcoPy; further
+  numerical and methodological auditing will continue in subsequent releases.
+
 
 Examples
 ======

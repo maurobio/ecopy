@@ -89,11 +89,11 @@ class corner4(object):
 						iteration += 1
 					obsStat.append(stat_obs)
 					statType.append('Pearson r')
-					if test is 'greater':
+					if test == 'greater':
 						pval.append(np.mean(stat_perm >= stat_obs))
-					if test is 'lower':
+					if test == 'lower':
 						pval.append(np.mean(stat_perm <= stat_obs))
-					if test is 'both':
+					if test == 'both':
 						pval.append(np.mean(np.abs(stat_perm)>=np.abs(stat_obs)))
 				if R.iloc[:,i].dtype=='object' and Q.iloc[:,j].dtype=='object':
 					R2 = factorize(R.iloc[:,i])[0]
@@ -108,11 +108,11 @@ class corner4(object):
 						iteration += 1
 					obsStat.append(stat_obs)
 					statType.append('Chi-Squared')
-					if test is 'greater':
+					if test == 'greater':
 						pval.append(np.mean(stat_perm >= stat_obs))
-					if test is 'lower':
+					if test == 'lower':
 						pval.append(np.mean(stat_perm <= stat_obs))
-					if test is 'both':
+					if test == 'both':
 						pval.append(np.mean(np.abs(stat_perm)>=np.abs(stat_obs)))
 				if R.iloc[:,i].dtype=='object' and Q.iloc[:,j].dtype=='float':
 					stat_obs = QualQuant(R.iloc[:,i], L, Q.iloc[:,j])
@@ -123,11 +123,11 @@ class corner4(object):
 						iteration += 1
 					obsStat.append(stat_obs)
 					statType.append('F')
-					if test is 'greater':
+					if test == 'greater':
 						pval.append(np.mean(stat_perm >= stat_obs))
-					if test is 'lower':
+					if test == 'lower':
 						pval.append(np.mean(stat_perm <= stat_obs))
-					if test is 'both':
+					if test == 'both':
 						pval.append(np.mean(np.abs(stat_perm)>=np.abs(stat_obs)))
 				if R.iloc[:,i].dtype=='float' and Q.iloc[:,j].dtype=='object':
 					stat_obs = QuantQual(R.iloc[:,i], L, Q.iloc[:,j])
@@ -138,11 +138,11 @@ class corner4(object):
 						iteration += 1
 					obsStat.append(stat_obs)
 					statType.append('F-statistic')
-					if test is 'greater':
+					if test == 'greater':
 						pval.append(np.mean(stat_perm >= stat_obs))
-					if test is 'lower':
+					if test == 'lower':
 						pval.append(np.mean(stat_perm <= stat_obs))
-					if test is 'both':
+					if test == 'both':
 						pval.append(np.mean(np.abs(stat_perm)>=np.abs(stat_obs)))
 		self.results = DataFrame({'Comparison': compName, 'Statistic': statType, 'Observed Stat': np.round(obsStat, 2), 'p-value': np.round(pval, 3)})
 		self.results['tail'] = test
@@ -169,7 +169,7 @@ def QuantQuant(R, L, Q):
 			if L2[i,j] != 0:
 				Ro.extend([R2[i]]*L2[i,j])
 				Qo.extend([Q2[j]]*L2[i,j])
-	r = np.corrcoef(np.array(zip(Ro, Qo)), rowvar=0)[0,1]
+	r = np.corrcoef(np.array(list(zip(Ro, Qo))), rowvar=0)[0,1]
 	return r
 
 def QualQual(R, L, Q, n_env, n_trait):
@@ -181,7 +181,7 @@ def QualQual(R, L, Q, n_env, n_trait):
 			if L2[i,j] != 0:
 				Ro.extend([R[i]]*L2[i,j])
 				Qo.extend([Q[j]]*L2[i,j])
-	inflMat = np.array(zip(Ro, Qo))
+	inflMat = np.array(list(zip(Ro, Qo)))
 	crosstab = np.zeros((n_env, n_trait))
 	for i in range(n_env):
 		for j in range(n_trait):
@@ -242,15 +242,15 @@ def p_adjust(p, method):
 		return np.minimum(p*len(p), 1)
 	if method == 'holm':
 		temp = DataFrame({'p': p})
-		temp.sort(columns='p', inplace=True)
+		temp.sort_values(by='p', inplace=True)
 		temp['newID'] = range(1, len(temp)+1)
 		temp['p_adj'] = np.minimum(temp['p'] * (1 + len(temp) - temp['newID']), 1)
-		temp.sort(inplace=True)
+		temp.sort_index(inplace=True)
 		return temp['p_adj']
 	if method == 'fdr':
 		temp = DataFrame({'p': p})
-		temp.sort(columns='p', inplace=True, ascending=False)
+		temp.sort_values(by='p', inplace=True, ascending=False)
 		temp['newID'] = range(1, len(temp)+1)
 		temp['p_adj'] = np.minimum(1, len(temp)/temp['newID'] * temp['p'])
-		temp.sort(inplace=True)
+		temp.sort_index(inplace=True)
 		return np.round(temp['p_adj'], 3)

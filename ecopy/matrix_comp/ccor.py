@@ -122,8 +122,10 @@ class ccor(object):
 		CoefY2 = Chol2.dot(U)
 		self.Scores1 = DataFrame(Y1.dot(CoefY1), index=siteNames)
 		self.Scores2 = DataFrame(Y2.dot(CoefY2), index=siteNames)
-		self.loadings1 = np.corrcoef(Y1, self.Scores1, rowvar=0)[:5, 5:]
-		self.loadings2 = np.corrcoef(Y2, self.Scores2, rowvar=0)[:3, 3:]
+		nvar1 = Y1.shape[1]
+		nvar2 = Y2.shape[1]
+		self.loadings1 = np.corrcoef(Y1, self.Scores1, rowvar=0)[:nvar1, nvar1:]
+		self.loadings2 = np.corrcoef(Y2, self.Scores2, rowvar=0)[:nvar2, nvar2:]
 		axes1 = ['CA Axis {0}'.format(x) for x in range(1, self.loadings1.shape[1]+1)]
 		self.loadings1 = DataFrame(self.loadings1, index=varNames_1, columns=axes1)
 		axes2 = ['CA Axis {0}'.format(x) for x in range(1, self.loadings2.shape[1]+1)]

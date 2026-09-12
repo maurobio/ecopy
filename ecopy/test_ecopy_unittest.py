@@ -29,12 +29,12 @@ class TestECOPY(unittest.TestCase):
 	def test_diversity(self):
 		sp = np.array([0, 1, 2, 3, 0]).reshape(1,5)
 		div = np.round(diversity(sp))
-		self.assertEqual(div, 1)
+		self.assertEqual(div[0], 3)
 
 	def test_rarefy(self):
-		BCI = load_data('BCI')
-		rareRich = np.round(rarefy(BCI, 'rarefy'))
-		self.assertEqual(rareRich[1], 77)
+		BCI = np.array([[5, 3, 2], [2, 4, 4]])
+		rareRich = np.round(rarefy(BCI, 'rarefy', size=5), 6)
+		self.assertEqual(rareRich[0], 2.690476)
 
 if __name__ == '__main__':
 	unittest.main()

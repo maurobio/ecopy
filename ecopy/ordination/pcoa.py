@@ -107,7 +107,7 @@ class pcoa(object):
 			if correction not in ['1', '2']:
 				msg = "correction must be either '1' or '2'"
 				raise ValueError(msg)
-		if correction is '1':
+		if correction == '1':
 			negEvl = np.abs(np.min(self.evals[self.evals < 0]))
 			A = -0.5*np.square(y) - negEvl
 			np.fill_diagonal(A, 0)
@@ -116,7 +116,7 @@ class pcoa(object):
 			idx = self.evals.argsort()[::-1]
 			self.U = self.U[:,idx]
 			self.correction = negEvl
-		if correction is '2':
+		if correction == '2':
 			mat0 = np.zeros((n,n))
 			matI = -1.*np.eye(n)
 			d1 = 2.*D
@@ -135,7 +135,7 @@ class pcoa(object):
 			self.U = self.U[:,idx]
 			self.correction = posEvl
 		self.evals = np.round(self.evals[idx], 4)
-		self.U = np.round(self.U.dot(np.diag(np.sqrt(self.evals))), 4)
+		self.U = np.round(self.U.dot(np.diag(np.sqrt(np.maximum(self.evals, 0.0)))), 4)
 		self.siteLabs = ['Site ' + str(x) for x in range(1, y.shape[0]+1)]
 		if isinstance(x, DataFrame):
 			self.siteLabs = x.index
@@ -144,7 +144,7 @@ class pcoa(object):
 		self.y2 = y
 
 	def summary(self):
-		sds = np.sqrt(self.evals)
+		sds = np.sqrt(np.maximum(self.evals, 0.0))
 		props = self.evals / np.sum(self.evals)
 		cumSums = np.cumsum(self.evals) / np.sum(self.evals)
 		colNames = ['PCoA Axis ' + str(x) for x in range(1, len(self.evals)+1)]
@@ -176,7 +176,11 @@ class pcoa(object):
 				U2 = self.U[:,[xax-1, yax-1]].astype('float')
 				U2 = np.apply_along_axis(lambda x: (x - np.mean(x))/np.std(x, ddof=1), 0, U2)
 				S = (1./(d2.shape[0]-1))*d2.T.dot(U2)
-				dProj = np.sqrt(d2.shape[0]-1)*S.dot(np.diag(self.evals[[xax-1, yax-2]]**-0.5))
+				axes_evals = self.evals[[xax-1, yax-2]]
+		inv_sqrt = np.zeros(2)
+		pos = axes_evals > 0
+		inv_sqrt[pos] = axes_evals[pos]**-0.5
+		dProj = np.sqrt(d2.shape[0]-1)*S.dot(np.diag(inv_sqrt))
 		if not coords:
 			f, ax = py.subplots()
 			ax.axvline(0, ls='solid', c='k')
@@ -198,8 +202,8 @@ class pcoa(object):
 	def shepard(self, xax=1, yax=2):
 		coords = self.U[:,[xax-1, yax-1]]
 		reducedD = np.zeros((coords.shape[0], coords.shape[0]))
-		for i in xrange(coords.shape[0]):
-			for j in xrange(coords.shape[0]):
+		for i in range(coords.shape[0]):
+			for j in range(coords.shape[0]):
 				d = coords[i,:] - coords[j,:]
 				reducedD[i, j] = np.sqrt( d.dot(d) )
 		reducedD = reducedD[np.tril_indices_from(reducedD, k=-1)]

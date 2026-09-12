@@ -113,7 +113,7 @@ class MDS(object):
 			init2 = pcoa(distmat).U[:,:naxes]
 		else:
 			init2 = init
-		if transform is 'absolute':
+		if transform == 'absolute':
 			Vp = VTrans(weights)
 			for i in range(ntry):
 				if i ==0:
@@ -134,7 +134,7 @@ class MDS(object):
 					stressStore = stress2
 					coordStore = Z
 				self.parameters = None
-		if transform is 'ratio':
+		if transform == 'ratio':
 			bStore = None
 			Vp = VTrans(weights)
 			for i in range(ntry):
@@ -158,7 +158,7 @@ class MDS(object):
 					coordStore = Z
 					bStore = b
 				self.parameters = {'b': bStore}
-		if transform is 'linear':
+		if transform == 'linear':
 			aStore = None
 			bStore = None
 			for i in range(ntry):
@@ -184,7 +184,7 @@ class MDS(object):
 					aStore = a
 					bStore = b
 				self.parameters = {'a': aStore, 'b': bStore}
-		if transform is 'monotone':
+		if transform == 'monotone':
 			Vp = VTrans(weights)
 			for i in range(ntry):
 				if i ==0:
@@ -247,7 +247,7 @@ class MDS(object):
 		dObs = np.tril(self.obs).ravel()
 		f, ax = plt.subplots()
 		ax.plot(dObs, dHats, 'ro')
-		if self.transform is 'linear':
+		if self.transform == 'linear':
 			X = np.column_stack((np.ones(len(dObs)), dObs))
 			Y = dHats
 			B = np.linalg.solve(X.T.dot(X), X.T.dot(Y))
@@ -256,7 +256,7 @@ class MDS(object):
 			o = dObs.argsort()
 			ax.plot(dObs[o], linPreds[o], c='b', lw=2)
 			ax.text(0.05, 0.85, 'R2 = {:.3}'.format(R2), ha='left', va='center', transform=ax.transAxes)
-		if self.transform is 'monotone':
+		if self.transform == 'monotone':
 			monoPreds = isotonic(dHats, dObs)
 			R2 = 1 - ((dHats - monoPreds.prediction)**2).sum() / ((dHats-dObs)**2).sum()
 			o = dObs.argsort()

@@ -109,7 +109,11 @@ class ca(object):
 		idx = self.evals.argsort()[::-1]
 		self.evals = self.evals[idx]
 		self.U = self.U[:,idx]
-		self.Uhat = Q.dot(self.U).dot(np.diag(self.evals**-0.5))
+		safe_evals = np.maximum(self.evals, 0.0)
+		inv_sqrt = np.zeros_like(safe_evals)
+		pos = safe_evals > 0
+		inv_sqrt[pos] = safe_evals[pos]**-0.5
+		self.Uhat = Q.dot(self.U).dot(np.diag(inv_sqrt))
 		self.evals = self.evals[:-1]
 		self.U = self.U[:,:-1]
 		self.Uhat = self.Uhat[:,:-1]
@@ -165,7 +169,7 @@ class ca(object):
 
 
 	def summary(self):
-		sds = np.sqrt(self.evals)
+		sds = np.sqrt(np.maximum(self.evals, 0.0))
 		props = self.evals / np.sum(self.evals)
 		cumSums = np.cumsum(self.evals) / np.sum(self.evals)
 		colNames = ['CA Axis ' + str(x) for x in range(1, len(self.evals)+1)]
